@@ -37,3 +37,14 @@ class TaskForm(FlaskForm):
             ('Completed', 'Выполнена')
         ], validators=[DataRequired()])
     submit = SubmitField('Сохранить')
+
+class PostForm(FlaskForm):
+    title = StringField('Заголовок', validators=[DataRequired()])
+    content = TextAreaField('Содержимое', validators=[DataRequired()])
+    author_nickname = StringField('Никнейм', validators=[DataRequired()])
+    submit = SubmitField('Создать пост')
+
+class CommentForm(FlaskForm):
+    content = TextAreaField('Комментарий', validators=[DataRequired()])
+    author_nickname = StringField('Никнейм', validators=[DataRequired()])
+    submit = SubmitField('Добавить комментарий')

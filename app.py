@@ -4,6 +4,8 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import LoginForm, RegistrationForm, TaskForm
 from models import TMSDB, db
+from forms import PostForm, CommentForm
+from models import db, Post, Comment
 
 
 db = SQLAlchemy()
@@ -46,7 +48,7 @@ try:
     cursor.execute("SELECT version();")
     # Получить результат
     record = cursor.fetchone()
-    print("Вы подключены к - ", record, "\n")
+    print("Вы подключены к - ", record, "\n") #этот код я использовала для подключения постгрес, но видимо безуспешно
 
 except (Exception, Error) as error:
     print("Ошибка при работе с PostgreSQL", error)
@@ -171,6 +173,32 @@ def delete_task(task_id):
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route('/create_post', methods=['GET', 'POST'])
+def create_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author_nickname=form.author_nickname.data)
+        db.session.add(post)
+        db.session.commit()
+        flash('Пост успешно создан!', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', form=form)
+
+@app.route('/post/<int:post_id>', methods=['GET', 'POST'])
+def post_detail(post_id):
+    post = Post.query.get_or_404(post_id)
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(content=form.content.data, author_nickname=form.author_nickname.data, post_id=post.id)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Комментарий успешно добавлен!', 'success')
+        return redirect(url_for('post_detail', post_id=post.id))
+    comments = Comment.query.filter_by(post_id=post.id).all()
+    return render_template('post_detail.html', post=post, form=form, comments=comments)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
