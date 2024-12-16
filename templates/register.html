@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Регистрация</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+        {{ form.hidden_tag() }}
+        <p>{{ form.username.label }} {{ form.username(size=32) }}</p>
+        <p>{{ form.email.label }} {{ form.email(size=32) }}</p>
+        <p>{{ form.password.label }} {{ form.password(size=32) }}</p>
+        <p>{{ form.confirm_password.label }} {{ form.confirm_password(size=32) }}</p>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

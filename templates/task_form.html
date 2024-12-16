@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>
+        {% if form.title.data %}
+            Редактировать
+        {% else %}
+            Создать
+        {% endif %}
+        задачу
+    </h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>{{ form.title.label }} {{ form.title(size=32) }}</p>
+        <p>{{ form.description.label }} {{ form.description(cols=32, rows=4) }}</p>
+        <p>{{ form.status.label }} {{ form.status() }}</p>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Главная</a></li>
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('dashboard') }}">Мой кабинет</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('register') }}">Зарегистрироваться</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <div class="col-md-12 text-center">
+    {% if current_user.is_anonymous %}
+      <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">Войти</a>
+    {% else %}
+      <a class="btn btn-outline-danger" href="{{ url_for('auth.logout') }}">Выход</a>
+    {% endif %}
+
+</div>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
